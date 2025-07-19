@@ -12,7 +12,7 @@ const App = () => {
   const [chatStep, setChatStep] = useState('greeting');
   const [darkMode, setDarkMode] = useState(false);
   const [userInput, setUserInput] = useState('');
-  const [currentOrder, setCurrentOrder] = useState({ vegetables: '', address: '', timestamp: null });
+  const [currentOrder, setCurrentOrder] = useState({ vegetables: '', address: '', mobile: '', timestamp: null });
   const [orders, setOrders] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
@@ -71,30 +71,37 @@ const App = () => {
     if (chatStep === 'greeting') {
       setCurrentOrder({ ...currentOrder, vegetables: userInput });
       setChatMessages(prev => [...prev, {
-        type: 'bot', content: "Perfect choice! 📍 Please provide your delivery address:"
+        type: 'bot', content: "Perfect choice! 📍 Please provide your delivery address and Mobile Number:"
       }]);
       setChatStep('address');
-    } else if (chatStep === 'address') {
-      const finalOrder = {
-        ...currentOrder,
-        address: userInput,
-        timestamp: new Date().toISOString(),
-        id: Date.now(),
-        status: 'pending',
-        estimatedDelivery: new Date(Date.now() + 2.5 * 60 * 60 * 1000).toISOString()
-      };
-      setOrders(prev => [...prev, finalOrder]);
-      setUserOrders(prev => [...prev, finalOrder]);
-      setTotalOrders(prev => prev + 1);
+    } 
+    else if (chatStep === 'address') {
+      setCurrentOrder({...currentOrder, address: userInput});
       setChatMessages(prev => [...prev, {
-        type: 'bot',
-        content: `🎉 Order confirmed! Order ID: #${finalOrder.id}\n\n📦 Items: ${finalOrder.vegetables}\n🏠 Address: ${finalOrder.address}\n⏰ Estimated delivery: ${finalOrder.estimatedDelivery}\n\n🚚💚 We'll deliver fresh vegetables to your doorstep!`
+        type: 'bot', content: "📱 Please enter your mobile number:"
       }]);
-      setChatStep('completed');
-    }
-
-    setUserInput('');
-    setIsLoading(false);
+      setChatStep('mobile');
+    } 
+      else if(chatStep === 'mobile'){
+        const finalOrder = {
+          ...currentOrder,
+          mobile: userInput,
+          timestamp: new Date().toISOString(),
+          id: Date.now(),
+          status: 'pending',
+          estimatedDelivery: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+        };
+        setOrders(prev => [...prev, finalOrder]);
+        setUserOrders(prev => [...prev, finalOrder]);
+        setTotalOrders(prev => prev + 1);
+        setChatMessages(prev => [...prev, {
+          type: 'bot',
+          content: `🎉 Order confirmed! Order ID: #${finalOrder.id}\n\n📦 Items: ${finalOrder.vegetables}\n🏠 Address: ${finalOrder.address}\n📱 Mobile: ${finalOrder.mobile}\n⏰ Estimated delivery: ${new Date(finalOrder.estimatedDelivery).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n🚚💚 We'll deliver fresh vegetables to your doorstep!`
+        }]);
+        setChatStep('Completed');;
+      }
+      setUserInput('');
+      setIsLoading(false);
   }, [userInput, chatStep, currentOrder, isLoading]);
 
   const resetChat = () => {

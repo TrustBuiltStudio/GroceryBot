@@ -30,6 +30,7 @@ const AdminDashboard = ({ orders, vegetables,
                   <p><strong>👤 User:</strong> {order.user || 'N/A'}</p>
                   <p><strong>🧾 Order:</strong> {order.vegetables}</p>
                   <p><strong>📍 Address:</strong> {order.address}</p>
+                  <p><strong>📱 Mobile:</strong> {order.mobile || 'N/A'}</p>
                   <p><strong>📅 Date:</strong> {new Date(order.timestamp).toLocaleString()}</p>
                   {
                     order.status !== 'delivered' && (
